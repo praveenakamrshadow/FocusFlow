@@ -30,7 +30,6 @@ export function TimerDisplay({
     onResetSession,
     timerSettings,
 }: TimerDisplayProps) {
-    // Get the total seconds based on the current session type and settings
     const getTotalSeconds = () => {
         switch (currentSession) {
             case 'focus':
@@ -168,41 +167,66 @@ export function TimerDisplay({
                 </h2>
             </div>
 
-            <div className="w-72 h-72 rounded-full border-8 border-slate-100 dark:border-slate-800 flex items-center justify-center mb-8 relative">
-                <svg className="absolute inset-0 w-full h-full -rotate-90">
+            <div className="relative w-80 h-80">
+                {/* Neumorphic outer ring */}
+                <div
+                    className="absolute inset-0 rounded-full bg-slate-100 dark:bg-slate-800
+                    shadow-[6px_6px_12px_rgba(0,0,0,0.1),-6px_-6px_12px_rgba(255,255,255,0.8)] 
+                    dark:shadow-[6px_6px_12px_rgba(0,0,0,0.3),-6px_-6px_12px_rgba(255,255,255,0.05)]"
+                />
+
+                <div
+                    className="absolute inset-4 rounded-full bg-slate-50 dark:bg-slate-900
+                    shadow-[inset_4px_4px_8px_rgba(0,0,0,0.1),inset_-4px_-4px_8px_rgba(255,255,255,0.8)] 
+                    dark:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.3),inset_-4px_-4px_8px_rgba(255,255,255,0.05)]"
+                />
+
+                <svg className="absolute inset-0 w-full h-full transform -rotate-90">
                     <circle
                         cx="50%"
                         cy="50%"
-                        r="calc(50% - 20px)"
-                        strokeWidth="8"
-                        stroke="currentColor"
-                        fill="none"
-                        className="text-slate-100 dark:text-slate-800"
+                        r="45%"
+                        className="fill-none stroke-slate-200/50 dark:stroke-slate-700/50"
+                        strokeWidth="3%"
                     />
                     <circle
                         cx="50%"
                         cy="50%"
-                        r="calc(50% - 20px)"
-                        strokeWidth="8"
-                        stroke="currentColor"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeDasharray={`${2 * Math.PI * (50 - 5)}%`}
-                        strokeDashoffset={`${
-                            ((100 - progress) / 100) * 2 * Math.PI * (50 - 5)
-                        }%`}
+                        r="45%"
                         className={cn(
-                            'transition-all duration-1000',
-                            getSessionTextColor()
+                            'fill-none transition-all duration-1000 ease-in-out',
+                            currentSession === 'focus'
+                                ? 'stroke-blue-500/70 dark:stroke-blue-400/70'
+                                : currentSession === 'shortBreak'
+                                ? 'stroke-green-500/70 dark:stroke-green-400/70'
+                                : 'stroke-purple-500/70 dark:stroke-purple-400/70'
                         )}
+                        strokeWidth="3%"
+                        strokeLinecap="round"
+                        strokeDasharray={`${2 * Math.PI * 45}%`}
+                        strokeDashoffset={`${
+                            ((100 - progress) / 100) * 2 * Math.PI * 45
+                        }%`}
+                        style={{
+                            transition: 'stroke-dashoffset 1s linear',
+                            filter: 'drop-shadow(0px 2px 4px rgba(0,0,0,0.1))',
+                        }}
                     />
                 </svg>
-                <div className="text-6xl font-bold tabular-nums z-10">
-                    {formatTime()}
+
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <div
+                        className={cn(
+                            'text-7xl font-bold tracking-tight tabular-nums transition-colors duration-300',
+                            getSessionTextColor()
+                        )}
+                    >
+                        {formatTime()}
+                    </div>
                 </div>
             </div>
 
-            <div className="flex gap-4 mb-8">
+            <div className="flex gap-4 mt-6">
                 <Button
                     variant="outline"
                     size="icon"
@@ -240,7 +264,7 @@ export function TimerDisplay({
                 </Button>
             </div>
 
-            <div className="grid grid-cols-4 gap-2 w-full max-w-xs">
+            <div className="grid grid-cols-4 gap-2 w-full max-w-xs mt-6">
                 {[1, 2, 3, 4].map((session) => (
                     <div
                         key={session}
@@ -256,7 +280,7 @@ export function TimerDisplay({
                 ))}
             </div>
 
-            <div className="mt-6 text-sm text-muted-foreground">
+            <div className="mt-4 text-sm text-muted-foreground">
                 {currentSession === 'focus' ? (
                     <p>
                         Focus until {timerSettings.shortBreakTime} minute break
