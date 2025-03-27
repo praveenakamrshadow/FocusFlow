@@ -284,6 +284,7 @@ export default function Home() {
                             <TimerSettings
                                 settings={timerSettings}
                                 onUpdateSettings={handleUpdateSettings}
+                                onSave={() => setActiveTab('timer')}
                             />
                         </TabsContent>
                     </Tabs>

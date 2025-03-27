@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
+import { Input } from '@/components/ui/input';
 
 interface TimerSettingsProps {
     settings: {
@@ -16,11 +17,92 @@ interface TimerSettingsProps {
         notifications: boolean;
     };
     onUpdateSettings: (settings: any) => void;
+    onSave?: () => void;
+}
+
+interface TimeInputProps {
+    label: string;
+    value: number;
+    onChange: (value: number) => void;
+    max: number;
+}
+
+function TimeInput({ label, value, onChange, max }: TimeInputProps) {
+    const hours = Math.floor(value / 60);
+    const minutes = value % 60;
+
+    const handleHoursChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newHours = Math.min(
+            Math.max(0, parseInt(e.target.value) || 0),
+            Math.floor(max / 60)
+        );
+        const newTotal = newHours * 60 + minutes;
+        onChange(Math.max(1, newTotal));
+    };
+
+    const handleMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newMinutes = Math.min(
+            Math.max(0, parseInt(e.target.value) || 0),
+            59
+        );
+        const newTotal = hours * 60 + newMinutes;
+        onChange(Math.max(1, newTotal));
+    };
+
+    return (
+        <div className="space-y-4">
+            <h3 className="text-lg font-medium">
+                {label}: {value} minutes
+            </h3>
+            <div className="flex items-center gap-4 mb-2">
+                <div className="flex-1">
+                    <Slider
+                        value={[value]}
+                        min={1}
+                        max={max}
+                        step={1}
+                        onValueChange={(val) => onChange(Math.max(1, val[0]))}
+                        className="w-full"
+                    />
+                </div>
+                <div className="flex items-center gap-2 min-w-[180px]">
+                    <div className="flex flex-col">
+                        <Input
+                            type="number"
+                            value={hours}
+                            onChange={handleHoursChange}
+                            min={0}
+                            max={Math.floor(max / 60)}
+                            className="w-20"
+                        />
+                        <Label className="text-xs text-center mt-1">
+                            Hours
+                        </Label>
+                    </div>
+                    <span className="text-lg font-medium">:</span>
+                    <div className="flex flex-col">
+                        <Input
+                            type="number"
+                            value={minutes}
+                            onChange={handleMinutesChange}
+                            min={0}
+                            max={59}
+                            className="w-20"
+                        />
+                        <Label className="text-xs text-center mt-1">
+                            Minutes
+                        </Label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 }
 
 export function TimerSettings({
     settings,
     onUpdateSettings,
+    onSave,
 }: TimerSettingsProps) {
     const [focusTime, setFocusTime] = useState(settings.focusTime);
     const [shortBreakTime, setShortBreakTime] = useState(
@@ -46,14 +128,15 @@ export function TimerSettings({
 
     const handleSave = () => {
         const newSettings = {
-            focusTime,
-            shortBreakTime,
-            longBreakTime,
+            focusTime: Math.max(1, focusTime),
+            shortBreakTime: Math.max(1, shortBreakTime),
+            longBreakTime: Math.max(1, longBreakTime),
             autoStartBreaks,
             autoStartPomodoros,
             notifications,
         };
         onUpdateSettings(newSettings);
+        onSave?.();
     };
 
     return (
@@ -62,40 +145,25 @@ export function TimerSettings({
 
             <div className="space-y-8">
                 <div className="space-y-6">
-                    <h3 className="text-lg font-medium">
-                        Focus Time: {focusTime} minutes
-                    </h3>
-                    <Slider
-                        value={[focusTime]}
-                        min={1}
+                    <TimeInput
+                        label="Focus Time"
+                        value={focusTime}
+                        onChange={setFocusTime}
                         max={120}
-                        step={1}
-                        onValueChange={(value) => setFocusTime(value[0])}
-                        className="w-full"
                     />
 
-                    <h3 className="text-lg font-medium">
-                        Short Break: {shortBreakTime} minutes
-                    </h3>
-                    <Slider
-                        value={[shortBreakTime]}
-                        min={1}
+                    <TimeInput
+                        label="Short Break"
+                        value={shortBreakTime}
+                        onChange={setShortBreakTime}
                         max={30}
-                        step={1}
-                        onValueChange={(value) => setShortBreakTime(value[0])}
-                        className="w-full"
                     />
 
-                    <h3 className="text-lg font-medium">
-                        Long Break: {longBreakTime} minutes
-                    </h3>
-                    <Slider
-                        value={[longBreakTime]}
-                        min={1}
+                    <TimeInput
+                        label="Long Break"
+                        value={longBreakTime}
+                        onChange={setLongBreakTime}
                         max={60}
-                        step={1}
-                        onValueChange={(value) => setLongBreakTime(value[0])}
-                        className="w-full"
                     />
                 </div>
 
