@@ -139,7 +139,7 @@ export default function Home() {
     };
 
     return (
-        <main className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 flex flex-col items-center justify-start p-4">
+        <main className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 flex flex-col items-center justify-start p-2 sm:p-4">
             <audio
                 id="focusComplete"
                 src="/sounds/focus-complete.wav"
@@ -156,10 +156,10 @@ export default function Home() {
                 preload="auto"
             />
 
-            <div className="w-full max-w-5xl">
-                <div className="flex items-center justify-between py-4">
-                    <h1 className="text-3xl font-bold flex items-center gap-2">
-                        <Clock className="h-8 w-8 text-primary" />
+            <div className="w-full max-w-5xl px-2 sm:px-4">
+                <div className="flex flex-col sm:flex-row items-center justify-between py-2 sm:py-4 gap-2 sm:gap-0">
+                    <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
+                        <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
                         <span>FocusFlow</span>
                     </h1>
                     <div className="flex items-center gap-2">

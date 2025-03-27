@@ -67,7 +67,7 @@ export function TimerDisplay({
 
     // Timer countdown logic
     useEffect(() => {
-        let interval = null;
+        let interval: NodeJS.Timeout | null = null;
 
         if (isActive && timeLeft > 0) {
             interval = setInterval(() => {
@@ -91,7 +91,9 @@ export function TimerDisplay({
             onSessionComplete();
         }
 
-        return () => clearInterval(interval);
+        return () => {
+            if (interval) clearInterval(interval);
+        };
     }, [isActive, timeLeft, onSessionComplete, timerSettings]);
 
     const formatTime = () => {
@@ -149,8 +151,8 @@ export function TimerDisplay({
     };
 
     return (
-        <div className="flex flex-col items-center p-8">
-            <div className="mb-8 text-center">
+        <div className="flex flex-col items-center p-4 sm:p-8">
+            <div className="mb-4 sm:mb-8 text-center">
                 <Badge
                     variant="outline"
                     className={cn(
@@ -162,12 +164,17 @@ export function TimerDisplay({
                         ? `Session ${sessionsCompleted + 1}/4`
                         : 'Break Time'}
                 </Badge>
-                <h2 className={cn('text-2xl font-bold', getSessionTextColor())}>
+                <h2
+                    className={cn(
+                        'text-xl sm:text-2xl font-bold',
+                        getSessionTextColor()
+                    )}
+                >
                     {getSessionName()}
                 </h2>
             </div>
 
-            <div className="relative w-80 h-80">
+            <div className="relative w-64 h-64 sm:w-80 sm:h-80">
                 {/* Neumorphic outer ring */}
                 <div
                     className="absolute inset-0 rounded-full bg-slate-100 dark:bg-slate-800
@@ -217,7 +224,7 @@ export function TimerDisplay({
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <div
                         className={cn(
-                            'text-7xl font-bold tracking-tight tabular-nums transition-colors duration-300',
+                            'text-5xl sm:text-7xl font-bold tracking-tight tabular-nums transition-colors duration-300',
                             getSessionTextColor()
                         )}
                     >
@@ -226,20 +233,20 @@ export function TimerDisplay({
                 </div>
             </div>
 
-            <div className="flex gap-4 mt-6">
+            <div className="flex gap-3 sm:gap-4 mt-4 sm:mt-6">
                 <Button
                     variant="outline"
                     size="icon"
-                    className="h-12 w-12 rounded-full"
+                    className="h-10 w-10 sm:h-12 sm:w-12 rounded-full"
                     onClick={handleReset}
                 >
-                    <RotateCcw className="h-5 w-5" />
+                    <RotateCcw className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
                 <Button
                     variant="default"
                     size="icon"
                     className={cn(
-                        'h-14 w-14 rounded-full',
+                        'h-12 w-12 sm:h-14 sm:w-14 rounded-full',
                         currentSession === 'focus'
                             ? 'bg-blue-600 hover:bg-blue-700'
                             : currentSession === 'shortBreak'
