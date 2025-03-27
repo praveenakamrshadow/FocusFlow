@@ -139,7 +139,7 @@ export default function Home() {
     };
 
     return (
-        <main className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 flex flex-col items-center justify-center p-4">
+        <main className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 flex flex-col items-center justify-start p-4">
             <audio
                 id="focusComplete"
                 src="/sounds/focus-complete.wav"
@@ -156,115 +156,111 @@ export default function Home() {
                 preload="auto"
             />
 
-            <Card className="w-full max-w-3xl shadow-xl border-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur rounded-2xl">
-                <CardContent className="p-0">
-                    <div className="flex items-center justify-between p-4 border-b">
-                        <h1 className="text-2xl font-bold flex items-center gap-2">
-                            <Clock className="h-6 w-6 text-primary" />
-                            <span>FocusFlow</span>
-                        </h1>
-                        <div className="flex items-center gap-2">
-                            <TooltipProvider delayDuration={0}>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button
-                                            variant={
-                                                activeTab === 'timer'
-                                                    ? 'default'
-                                                    : 'ghost'
-                                            }
-                                            size="icon"
-                                            onClick={() =>
-                                                setActiveTab('timer')
-                                            }
-                                            className="rounded-full"
-                                        >
-                                            <Clock className="h-5 w-5" />
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="top">
-                                        <p>Timer</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
+            <div className="w-full max-w-5xl">
+                <div className="flex items-center justify-between py-4">
+                    <h1 className="text-3xl font-bold flex items-center gap-2">
+                        <Clock className="h-8 w-8 text-primary" />
+                        <span>FocusFlow</span>
+                    </h1>
+                    <div className="flex items-center gap-2">
+                        <TooltipProvider delayDuration={0}>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant={
+                                            activeTab === 'timer'
+                                                ? 'default'
+                                                : 'ghost'
+                                        }
+                                        size="icon"
+                                        onClick={() => setActiveTab('timer')}
+                                        className="rounded-full"
+                                    >
+                                        <Clock className="h-5 w-5" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="top">
+                                    <p>Timer</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
 
-                            <TooltipProvider delayDuration={0}>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button
-                                            variant={
-                                                activeTab === 'settings'
-                                                    ? 'default'
-                                                    : 'ghost'
-                                            }
-                                            size="icon"
-                                            onClick={() =>
-                                                setActiveTab('settings')
-                                            }
-                                            className="rounded-full"
-                                        >
-                                            <Settings className="h-5 w-5" />
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="top">
-                                        <p>Settings</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
+                        <TooltipProvider delayDuration={0}>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant={
+                                            activeTab === 'settings'
+                                                ? 'default'
+                                                : 'ghost'
+                                        }
+                                        size="icon"
+                                        onClick={() => setActiveTab('settings')}
+                                        className="rounded-full"
+                                    >
+                                        <Settings className="h-5 w-5" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="top">
+                                    <p>Settings</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
 
-                            <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-1"></div>
+                        <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-1"></div>
 
-                            <TooltipProvider delayDuration={0}>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={resetAllSessions}
-                                            className="rounded-full"
-                                        >
-                                            <RotateCcw className="h-5 w-5" />
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="top">
-                                        <p>Reset all sessions</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
+                        <TooltipProvider delayDuration={0}>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={resetAllSessions}
+                                        className="rounded-full"
+                                    >
+                                        <RotateCcw className="h-5 w-5" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="top">
+                                    <p>Reset all sessions</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
 
-                            <TooltipProvider delayDuration={0}>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={toggleNotifications}
-                                            className="rounded-full"
-                                        >
-                                            {timerSettings.notifications ? (
-                                                <BellRing className="h-5 w-5" />
-                                            ) : (
-                                                <BellOff className="h-5 w-5" />
-                                            )}
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="top">
-                                        <p>
-                                            {timerSettings.notifications
-                                                ? 'Mute'
-                                                : 'Unmute'}{' '}
-                                            notifications
-                                        </p>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
+                        <TooltipProvider delayDuration={0}>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={toggleNotifications}
+                                        className="rounded-full"
+                                    >
+                                        {timerSettings.notifications ? (
+                                            <BellRing className="h-5 w-5" />
+                                        ) : (
+                                            <BellOff className="h-5 w-5" />
+                                        )}
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="top">
+                                    <p>
+                                        {timerSettings.notifications
+                                            ? 'Mute'
+                                            : 'Unmute'}{' '}
+                                        notifications
+                                    </p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
 
-                            <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-1"></div>
+                        <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-1"></div>
 
-                            <ThemeToggle />
-                        </div>
+                        <ThemeToggle />
                     </div>
+                </div>
 
+                <div className="backdrop-blur-xl bg-white/40 dark:bg-slate-900/40 rounded-3xl shadow-xl border border-white/20 dark:border-slate-700/30">
                     <Tabs
                         value={activeTab}
                         onValueChange={setActiveTab}
@@ -288,8 +284,8 @@ export default function Home() {
                             />
                         </TabsContent>
                     </Tabs>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
         </main>
     );
 }
