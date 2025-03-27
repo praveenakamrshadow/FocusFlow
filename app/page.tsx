@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Clock, Settings, BellRing, BellOff, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
@@ -41,19 +41,64 @@ export default function Home() {
 
     const { toast } = useToast();
 
+    const focusCompleteSound = useRef<HTMLAudioElement | null>(null);
+    const shortBreakCompleteSound = useRef<HTMLAudioElement | null>(null);
+    const longBreakCompleteSound = useRef<HTMLAudioElement | null>(null);
+
+    useEffect(() => {
+        focusCompleteSound.current = new Audio('/sounds/focus-complete.wav');
+        shortBreakCompleteSound.current = new Audio(
+            '/sounds/short-break-complete.wav'
+        );
+        longBreakCompleteSound.current = new Audio(
+            '/sounds/long-break-complete.wav'
+        );
+    }, []);
+
+    const playNotificationSound = (
+        type: 'focus' | 'shortBreak' | 'longBreak'
+    ) => {
+        if (!timerSettings.notifications) return;
+
+        switch (type) {
+            case 'focus':
+                focusCompleteSound.current
+                    ?.play()
+                    .catch((err) => console.log('Audio play failed:', err));
+                break;
+            case 'shortBreak':
+                shortBreakCompleteSound.current
+                    ?.play()
+                    .catch((err) => console.log('Audio play failed:', err));
+                break;
+            case 'longBreak':
+                longBreakCompleteSound.current
+                    ?.play()
+                    .catch((err) => console.log('Audio play failed:', err));
+                break;
+        }
+    };
+
     const handleSessionComplete = () => {
         if (currentSession === 'focus') {
             setSessionsCompleted((prev) => {
                 const newCount = prev + 1;
                 if (newCount % 4 === 0) {
                     setCurrentSession('longBreak');
+                    playNotificationSound('focus');
                 } else {
                     setCurrentSession('shortBreak');
+                    playNotificationSound('focus');
                 }
                 return newCount;
             });
         } else {
             setCurrentSession('focus');
+            if (currentSession === 'longBreak') {
+                playNotificationSound('longBreak');
+            } else {
+                playNotificationSound('shortBreak');
+            }
         }
     };
 
@@ -70,9 +115,7 @@ export default function Home() {
         }
     };
 
-    const handleResetSession = () => {
-        // Just reset the current session, don't change the type
-    };
+    const handleResetSession = () => {};
 
     const handleUpdateSettings = (newSettings: TimerSettingsType) => {
         setTimerSettings(newSettings);
@@ -97,6 +140,22 @@ export default function Home() {
 
     return (
         <main className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 flex flex-col items-center justify-center p-4">
+            <audio
+                id="focusComplete"
+                src="/sounds/focus-complete.wav"
+                preload="auto"
+            />
+            <audio
+                id="shortBreakComplete"
+                src="/sounds/short-break-complete.wav"
+                preload="auto"
+            />
+            <audio
+                id="longBreakComplete"
+                src="/sounds/long-break-complete.wav"
+                preload="auto"
+            />
+
             <Card className="w-full max-w-3xl shadow-xl border-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur rounded-2xl">
                 <CardContent className="p-0">
                     <div className="flex items-center justify-between p-4 border-b">
