@@ -15,7 +15,7 @@ export function ThemeToggle() {
     const { theme, setTheme } = useTheme();
 
     return (
-        <TooltipProvider>
+        <TooltipProvider delayDuration={0}>
             <Tooltip>
                 <TooltipTrigger asChild>
                     <Button
@@ -31,7 +31,7 @@ export function ThemeToggle() {
                         <span className="sr-only">Toggle theme</span>
                     </Button>
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent side="top" sideOffset={5}>
                     <p>Toggle {theme === 'light' ? 'dark' : 'light'} mode</p>
                 </TooltipContent>
             </Tooltip>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Clock, Settings, BellRing, BellOff, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
@@ -14,6 +14,8 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { useToast } from '@/components/ui/use-toast';
+import { Toast, ToastProvider } from '@/components/ui/toast';
 
 interface TimerSettingsType {
     focusTime: number;
@@ -37,6 +39,8 @@ export default function Home() {
 
     const [currentSession, setCurrentSession] = useState('focus');
     const [sessionsCompleted, setSessionsCompleted] = useState(0);
+
+    const { toast } = useToast();
 
     const handleSessionComplete = () => {
         if (currentSession === 'focus') {
@@ -73,6 +77,11 @@ export default function Home() {
 
     const handleUpdateSettings = (newSettings: TimerSettingsType) => {
         setTimerSettings(newSettings);
+        toast({
+            title: 'Settings saved',
+            description: 'Your timer settings have been updated successfully.',
+            duration: 3000,
+        });
     };
 
     const toggleNotifications = () => {
@@ -88,108 +97,142 @@ export default function Home() {
     };
 
     return (
-        <main className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 flex flex-col items-center justify-center p-4">
-            <Card className="w-full max-w-3xl shadow-xl border-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur rounded-2xl overflow-hidden">
-                <CardContent className="p-0">
-                    <div className="flex items-center justify-between p-4 border-b">
-                        <h1 className="text-2xl font-bold flex items-center gap-2">
-                            <Clock className="h-6 w-6 text-primary" />
-                            <span>FocusFlow</span>
-                        </h1>
-                        <div className="flex items-center gap-2">
-                            <Button
-                                variant={
-                                    activeTab === 'timer' ? 'default' : 'ghost'
-                                }
-                                size="icon"
-                                onClick={() => setActiveTab('timer')}
-                                className="rounded-full"
-                            >
-                                <Clock className="h-5 w-5" />
-                            </Button>
-                            <Button
-                                variant={
-                                    activeTab === 'settings'
-                                        ? 'default'
-                                        : 'ghost'
-                                }
-                                size="icon"
-                                onClick={() => setActiveTab('settings')}
-                                className="rounded-full"
-                            >
-                                <Settings className="h-5 w-5" />
-                            </Button>
-                            <TooltipProvider>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={toggleNotifications}
-                                            className="rounded-full"
-                                        >
-                                            {timerSettings.notifications ? (
-                                                <BellRing className="h-5 w-5" />
-                                            ) : (
-                                                <BellOff className="h-5 w-5" />
-                                            )}
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p>
-                                            {timerSettings.notifications
-                                                ? 'Mute'
-                                                : 'Unmute'}{' '}
-                                            notifications
-                                        </p>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
-                            <TooltipProvider>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={resetAllSessions}
-                                            className="rounded-full"
-                                        >
-                                            <RotateCcw className="h-5 w-5" />
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p>Reset all sessions</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
-                            <ThemeToggle />
-                        </div>
-                    </div>
+        <ToastProvider>
+            <main className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 flex flex-col items-center justify-center p-4">
+                <Card className="w-full max-w-3xl shadow-xl border-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur rounded-2xl">
+                    <CardContent className="p-0">
+                        <div className="flex items-center justify-between p-4 border-b">
+                            <h1 className="text-2xl font-bold flex items-center gap-2">
+                                <Clock className="h-6 w-6 text-primary" />
+                                <span>FocusFlow</span>
+                            </h1>
+                            <div className="flex items-center gap-2">
+                                <TooltipProvider delayDuration={0}>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button
+                                                variant={
+                                                    activeTab === 'timer'
+                                                        ? 'default'
+                                                        : 'ghost'
+                                                }
+                                                size="icon"
+                                                onClick={() =>
+                                                    setActiveTab('timer')
+                                                }
+                                                className="rounded-full"
+                                            >
+                                                <Clock className="h-5 w-5" />
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent side="top">
+                                            <p>Timer</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
 
-                    <Tabs
-                        value={activeTab}
-                        onValueChange={setActiveTab}
-                        className="w-full"
-                    >
-                        <TabsContent value="timer" className="p-0 m-0">
-                            <TimerDisplay
-                                currentSession={currentSession}
-                                sessionsCompleted={sessionsCompleted}
-                                onSessionComplete={handleSessionComplete}
-                                onSkipSession={handleSkipSession}
-                                onResetSession={handleResetSession}
-                                timerSettings={timerSettings}
-                            />
-                        </TabsContent>
-                        <TabsContent value="settings" className="p-0 m-0">
-                            <TimerSettings
-                                settings={timerSettings}
-                                onUpdateSettings={handleUpdateSettings}
-                            />
-                        </TabsContent>
-                    </Tabs>
-                </CardContent>
-            </Card>
-        </main>
+                                <TooltipProvider delayDuration={0}>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button
+                                                variant={
+                                                    activeTab === 'settings'
+                                                        ? 'default'
+                                                        : 'ghost'
+                                                }
+                                                size="icon"
+                                                onClick={() =>
+                                                    setActiveTab('settings')
+                                                }
+                                                className="rounded-full"
+                                            >
+                                                <Settings className="h-5 w-5" />
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent side="top">
+                                            <p>Settings</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+
+                                <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-1"></div>
+
+                                <TooltipProvider delayDuration={0}>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={resetAllSessions}
+                                                className="rounded-full"
+                                            >
+                                                <RotateCcw className="h-5 w-5" />
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent side="top">
+                                            <p>Reset all sessions</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+
+                                <TooltipProvider delayDuration={0}>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={toggleNotifications}
+                                                className="rounded-full"
+                                            >
+                                                {timerSettings.notifications ? (
+                                                    <BellRing className="h-5 w-5" />
+                                                ) : (
+                                                    <BellOff className="h-5 w-5" />
+                                                )}
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent side="top">
+                                            <p>
+                                                {timerSettings.notifications
+                                                    ? 'Mute'
+                                                    : 'Unmute'}{' '}
+                                                notifications
+                                            </p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+
+                                <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-1"></div>
+
+                                <ThemeToggle />
+                            </div>
+                        </div>
+
+                        <Tabs
+                            value={activeTab}
+                            onValueChange={setActiveTab}
+                            className="w-full"
+                        >
+                            <TabsContent value="timer" className="p-0 m-0">
+                                <TimerDisplay
+                                    currentSession={currentSession}
+                                    sessionsCompleted={sessionsCompleted}
+                                    onSessionComplete={handleSessionComplete}
+                                    onSkipSession={handleSkipSession}
+                                    onResetSession={handleResetSession}
+                                    timerSettings={timerSettings}
+                                />
+                            </TabsContent>
+                            <TabsContent value="settings" className="p-0 m-0">
+                                <TimerSettings
+                                    settings={timerSettings}
+                                    onUpdateSettings={handleUpdateSettings}
+                                />
+                            </TabsContent>
+                        </Tabs>
+                    </CardContent>
+                </Card>
+            </main>
+        </ToastProvider>
     );
 }
