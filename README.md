@@ -30,7 +30,7 @@ A modern, feature-rich Pomodoro Timer application built with Next.js and React. 
 
 1. Clone the repository:
 ```bash
-git clone [https://github.com/praveenakamrshadow/FocusFlow](https://github.com/praveenakamrshadow/FocusFlow)
+git clone https://github.com/praveenakamrshadow/FocusFlow
 cd pomodoro-timer
 ```
 
