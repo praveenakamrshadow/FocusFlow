@@ -48,13 +48,11 @@ export function TimerDisplay({
     const [progress, setProgress] = useState(100);
     const totalSecondsRef = useRef(getTotalSeconds());
 
-    // Reset timer when session changes
     useEffect(() => {
         totalSecondsRef.current = getTotalSeconds();
         setTimeLeft(totalSecondsRef.current);
         setProgress(100);
 
-        // Auto-start based on settings
         if (
             (currentSession === 'focus' && timerSettings.autoStartPomodoros) ||
             (currentSession !== 'focus' && timerSettings.autoStartBreaks)
@@ -65,7 +63,6 @@ export function TimerDisplay({
         }
     }, [currentSession, timerSettings]);
 
-    // Timer countdown logic
     useEffect(() => {
         let interval: NodeJS.Timeout | null = null;
 
@@ -78,10 +75,8 @@ export function TimerDisplay({
                 });
             }, 1000);
         } else if (isActive && timeLeft === 0) {
-            // Session completed
             setIsActive(false);
             if (timerSettings.notifications) {
-                // Play notification sound if implemented
                 try {
                     new Audio('/notification.mp3').play();
                 } catch (e) {
@@ -175,7 +170,6 @@ export function TimerDisplay({
             </div>
 
             <div className="relative w-64 h-64 sm:w-80 sm:h-80">
-                {/* Neumorphic outer ring */}
                 <div
                     className="absolute inset-0 rounded-full bg-slate-100 dark:bg-slate-800
                     shadow-[6px_6px_12px_rgba(0,0,0,0.1),-6px_-6px_12px_rgba(255,255,255,0.8)] 
