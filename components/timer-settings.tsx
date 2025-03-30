@@ -15,6 +15,7 @@ interface TimerSettingsProps {
         autoStartBreaks: boolean;
         autoStartPomodoros: boolean;
         notifications: boolean;
+        totalFocusSessions: number;
     };
     onUpdateSettings: (settings: any) => void;
     onSave?: () => void;
@@ -27,7 +28,17 @@ interface TimeInputProps {
     max: number;
 }
 
-function TimeInput({ label, value, onChange, max }: TimeInputProps) {
+const TimeInput = ({
+    label,
+    value,
+    onChange,
+    max = 60,
+}: {
+    label: string;
+    value: number;
+    onChange: (value: number) => void;
+    max?: number;
+}) => {
     const hours = Math.floor(value / 60);
     const minutes = value % 60;
 
@@ -62,7 +73,7 @@ function TimeInput({ label, value, onChange, max }: TimeInputProps) {
                         max={max}
                         step={1}
                         onValueChange={(val) => onChange(Math.max(1, val[0]))}
-                        className="w-full"
+                        className="w-full cursor-grab active:cursor-grabbing"
                     />
                 </div>
                 <div className="flex items-center gap-2 min-w-[180px]">
@@ -97,7 +108,7 @@ function TimeInput({ label, value, onChange, max }: TimeInputProps) {
             </div>
         </div>
     );
-}
+};
 
 export function TimerSettings({
     settings,
@@ -116,6 +127,9 @@ export function TimerSettings({
         settings.autoStartPomodoros
     );
     const [notifications, setNotifications] = useState(settings.notifications);
+    const [totalFocusSessions, setTotalFocusSessions] = useState(
+        settings.totalFocusSessions
+    );
 
     useEffect(() => {
         setFocusTime(settings.focusTime);
@@ -124,6 +138,7 @@ export function TimerSettings({
         setAutoStartBreaks(settings.autoStartBreaks);
         setAutoStartPomodoros(settings.autoStartPomodoros);
         setNotifications(settings.notifications);
+        setTotalFocusSessions(settings.totalFocusSessions);
     }, [settings]);
 
     const handleSave = () => {
@@ -134,6 +149,7 @@ export function TimerSettings({
             autoStartBreaks,
             autoStartPomodoros,
             notifications,
+            totalFocusSessions: Math.max(1, totalFocusSessions),
         };
         onUpdateSettings(newSettings);
         onSave?.();
@@ -165,6 +181,43 @@ export function TimerSettings({
                         onChange={setLongBreakTime}
                         max={60}
                     />
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-medium">
+                            Total Focus Sessions: {totalFocusSessions}
+                        </h3>
+                        <div className="flex items-center gap-4 mb-2">
+                            <div className="flex-1">
+                                <Slider
+                                    value={[totalFocusSessions]}
+                                    min={1}
+                                    max={12}
+                                    step={1}
+                                    onValueChange={(val) =>
+                                        setTotalFocusSessions(
+                                            Math.max(1, val[0])
+                                        )
+                                    }
+                                    className="w-full cursor-grab active:cursor-grabbing"
+                                />
+                            </div>
+                            <Input
+                                type="number"
+                                value={totalFocusSessions}
+                                onChange={(e) =>
+                                    setTotalFocusSessions(
+                                        Math.max(
+                                            1,
+                                            parseInt(e.target.value) || 1
+                                        )
+                                    )
+                                }
+                                min="1"
+                                max="12"
+                                className="w-20"
+                            />
+                        </div>
+                    </div>
                 </div>
 
                 <div className="space-y-4">

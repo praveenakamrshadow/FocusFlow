@@ -19,6 +19,7 @@ interface TimerDisplayProps {
         autoStartBreaks: boolean;
         autoStartPomodoros: boolean;
         notifications: boolean;
+        totalFocusSessions: number;
     };
 }
 
@@ -156,7 +157,9 @@ export function TimerDisplay({
                     )}
                 >
                     {currentSession === 'focus'
-                        ? `Session ${sessionsCompleted + 1}/4`
+                        ? `Session ${sessionsCompleted + 1}/${
+                              timerSettings.totalFocusSessions
+                          }`
                         : 'Break Time'}
                 </Badge>
                 <h2
@@ -265,20 +268,27 @@ export function TimerDisplay({
                 </Button>
             </div>
 
-            <div className="grid grid-cols-4 gap-2 w-full max-w-xs mt-6">
-                {[1, 2, 3, 4].map((session) => (
-                    <div
-                        key={session}
-                        className={`h-2 rounded-full ${
-                            session <= sessionsCompleted % 4 ||
-                            (session === 4 &&
-                                sessionsCompleted % 4 === 0 &&
-                                sessionsCompleted > 0)
-                                ? getSessionColor()
-                                : 'bg-slate-200 dark:bg-slate-700'
-                        }`}
-                    />
-                ))}
+            <div
+                className={`grid gap-2 w-full max-w-xs mt-6`}
+                style={{
+                    gridTemplateColumns: `repeat(${Math.min(
+                        timerSettings.totalFocusSessions,
+                        8
+                    )}, 1fr)`,
+                }}
+            >
+                {Array.from({ length: timerSettings.totalFocusSessions }).map(
+                    (_, index) => (
+                        <div
+                            key={index}
+                            className={`h-2 rounded-full ${
+                                index < sessionsCompleted
+                                    ? getSessionColor()
+                                    : 'bg-slate-200 dark:bg-slate-700'
+                            }`}
+                        />
+                    )
+                )}
             </div>
 
             <div className="mt-4 text-sm text-muted-foreground">

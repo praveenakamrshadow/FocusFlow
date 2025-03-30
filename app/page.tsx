@@ -23,6 +23,7 @@ interface TimerSettingsType {
     autoStartBreaks: boolean;
     autoStartPomodoros: boolean;
     notifications: boolean;
+    totalFocusSessions: number;
 }
 
 export default function Home() {
@@ -34,6 +35,7 @@ export default function Home() {
         autoStartBreaks: true,
         autoStartPomodoros: false,
         notifications: true,
+        totalFocusSessions: 4,
     });
 
     const [currentSession, setCurrentSession] = useState('focus');
@@ -83,7 +85,7 @@ export default function Home() {
         if (currentSession === 'focus') {
             setSessionsCompleted((prev) => {
                 const newCount = prev + 1;
-                if (newCount % 4 === 0) {
+                if (newCount >= timerSettings.totalFocusSessions) {
                     setCurrentSession('longBreak');
                     playNotificationSound('focus');
                 } else {
@@ -96,6 +98,7 @@ export default function Home() {
             setCurrentSession('focus');
             if (currentSession === 'longBreak') {
                 playNotificationSound('longBreak');
+                setSessionsCompleted(0);
             } else {
                 playNotificationSound('shortBreak');
             }
@@ -104,7 +107,7 @@ export default function Home() {
 
     const handleSkipSession = () => {
         if (currentSession === 'focus') {
-            if ((sessionsCompleted + 1) % 4 === 0) {
+            if (sessionsCompleted + 1 >= timerSettings.totalFocusSessions) {
                 setCurrentSession('longBreak');
             } else {
                 setCurrentSession('shortBreak');
@@ -112,6 +115,9 @@ export default function Home() {
             setSessionsCompleted((prev) => prev + 1);
         } else {
             setCurrentSession('focus');
+            if (currentSession === 'longBreak') {
+                setSessionsCompleted(0);
+            }
         }
     };
 
