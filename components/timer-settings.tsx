@@ -76,7 +76,7 @@ const TimeInput = ({
                         className="w-full cursor-grab active:cursor-grabbing"
                     />
                 </div>
-                <div className="flex items-center gap-2 min-w-[180px]">
+                <div className="flex items-start gap-2 min-w-[180px]">
                     <div className="flex flex-col">
                         <Input
                             type="number"
@@ -90,7 +90,7 @@ const TimeInput = ({
                             Hours
                         </Label>
                     </div>
-                    <span className="text-lg font-medium">:</span>
+                    <span className="text-lg font-medium mt-1">:</span>
                     <div className="flex flex-col">
                         <Input
                             type="number"
