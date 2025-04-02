@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
     title: 'FocusFlow - Pomodoro Timer',
-    description: 'A beautiful and productive Pomodoro timer application',
+    description: 'A beautiful and productive Pomodoro timer application.',
 };
 
 export default function RootLayout({
